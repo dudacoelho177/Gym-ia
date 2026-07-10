@@ -94,6 +94,7 @@ O Onion Mini não é um gerador de código descontrolado. Ele segue regras estri
   - No **Cenário B**, a IA cria/edita os arquivos de código diretamente no projeto.
   - No **Cenário A**, a IA gera blocos de código para você colar.
 
+
 ### 📚 Estudando algo novo (O Ciclo de Knowledge Base)
 - **O que você diz:** *"Atue como @meta e faça uma pesquisa sobre o framework Tailwind. Crie uma KB para nós."*
 - **O que a IA faz:** Estuda o assunto e gera um Markdown mastigado.

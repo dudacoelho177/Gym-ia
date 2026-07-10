@@ -1,0 +1,8 @@
+{
+  "description": "Empresa quer migrar workloads de datacenter para cloud com apoio de operacao.",
+  "solution_type": "cloud",
+  "customer_segment": "varejo",
+  "objective": "modernizar infraestrutura e melhorar escalabilidade",
+  "initial_scope": "servidores de aplicacao, banco de dados e conectividade",
+  "target_audience": "pre-vendas"
+}
