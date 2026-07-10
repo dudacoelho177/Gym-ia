@@ -1,0 +1,15 @@
+# Segredos — nunca commitar
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+env/
+.pytest_cache/
+
+# Banco local (SQLite fallback de dev)
+*.db
+*.sqlite3

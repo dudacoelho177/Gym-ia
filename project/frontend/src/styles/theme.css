@@ -1,0 +1,234 @@
+/* Design tokens (specs/DESIGN-mastercard.md) — canvas cream, ink black, pill radius,
+   MarkForMC substituto (Sofia Sans), peso 450 no corpo, tracking -2% em headings.
+   Tema claro/escuro via [data-theme] no <html> — mesma paleta de acento (laranja, clay,
+   link blue) nos dois; o que muda são os papéis de superfície/texto (spec não define um
+   "dark mode" per se, só o rodapé ink+white — aqui generalizamos esse par para o app todo). */
+:root {
+  /* Paleta bruta (spec §2) — não muda entre temas */
+  --color-white: #FFFFFF;
+  --color-ink: #141413;
+  --color-signal-orange: #CF4500;
+  --color-light-signal-orange: #F37338;
+  --color-clay-brown: #C9622F;
+  --color-link-blue: #6C93E0;
+
+  --radius-tiny: 6px;
+  --radius-btn: 20px;
+  --radius-consent: 24px;
+  --radius-lg: 40px;
+  --radius-pill: 999px;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --space-8: 64px;
+
+  --font-family: "Sofia Sans", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- Tema Claro (default — canvas cream, spec §2) ---------- */
+:root,
+:root[data-theme="light"] {
+  --surface-canvas: #F3F0EE;
+  --surface-lifted: #FCFBFA;
+  --surface-card: #FFFFFF;
+  --surface-bubble-assistant: #F4F4F4;
+  --surface-nav: rgba(255, 255, 255, 0.9);
+  --surface-track: #D1CDC7;
+
+  --text-primary: #141413;
+  --text-body: #262627;
+  --text-muted: #696969;
+  --text-faint: #D1CDC7;
+  --text-italic-muted: #555555;
+
+  --border-subtle: rgba(20, 20, 19, 0.18);
+  --border-strong: var(--color-ink);
+
+  --btn-primary-bg: #141413;
+  --btn-primary-text: #F3F0EE;
+  --btn-secondary-bg: #FFFFFF;
+  --btn-secondary-text: #141413;
+  --btn-secondary-border: #141413;
+
+  --color-clay-brown: #9A3A0A;
+  --color-link-blue: #3860BE;
+
+  --shadow-1: rgba(0, 0, 0, 0.04) 0px 4px 24px 0px;
+  --shadow-2: rgba(0, 0, 0, 0.08) 0px 24px 48px 0px;
+  --shadow-3: rgba(0, 0, 0, 0.25) 0px 70px 110px 0px;
+}
+
+/* ---------- Tema Escuro (extensão do rodapé ink+cream da spec §4 p/ o app todo) ---------- */
+:root[data-theme="dark"] {
+  --surface-canvas: #141413;
+  --surface-lifted: #1B1B1A;
+  --surface-card: #232322;
+  --surface-bubble-assistant: #2A2A28;
+  --surface-nav: rgba(35, 35, 34, 0.9);
+  --surface-track: rgba(243, 240, 238, 0.16);
+
+  --text-primary: #F3F0EE;
+  --text-body: #D8D3CC;
+  --text-muted: #9C9C9A;
+  --text-faint: #5A5A57;
+  --text-italic-muted: #B7B2A9;
+
+  --border-subtle: rgba(243, 240, 238, 0.16);
+  --border-strong: #F3F0EE;
+
+  --btn-primary-bg: #F3F0EE;
+  --btn-primary-text: #141413;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-text: #F3F0EE;
+  --btn-secondary-border: #F3F0EE;
+
+  --color-clay-brown: #E08B5C;
+  --color-link-blue: #93B4F5;
+
+  --shadow-1: rgba(0, 0, 0, 0.24) 0px 4px 24px 0px;
+  --shadow-2: rgba(0, 0, 0, 0.4) 0px 24px 48px 0px;
+  --shadow-3: rgba(0, 0, 0, 0.6) 0px 70px 110px 0px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-weight: 450;
+  background: var(--surface-canvas);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+h1 { font-size: 40px; line-height: 1; }
+h2 { font-size: 28px; line-height: 1.15; }
+h3 { font-size: 18px; line-height: 1.2; }
+
+p {
+  font-weight: 450;
+  line-height: 1.4;
+  color: var(--text-body);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.08s ease, opacity 0.15s ease;
+}
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.5; cursor: default; }
+
+input, select, textarea {
+  font-family: inherit;
+  font-weight: 450;
+  font-size: 15px;
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-strong);
+}
+::placeholder {
+  color: var(--text-muted);
+}
+
+/* Eyebrow label: dot + uppercase tracked text — o único lugar com uppercase (spec §3). */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-light-signal-orange);
+  display: inline-block;
+}
+
+/* Botões (spec §4 Component Stylings > Buttons) */
+.btn-primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: 1.5px solid var(--btn-primary-bg);
+  border-radius: var(--radius-btn);
+  padding: 10px 24px;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.btn-secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1.5px solid var(--btn-secondary-border);
+  border-radius: var(--radius-btn);
+  padding: 10px 24px;
+  font-weight: 450;
+  font-size: 15px;
+}
+
+/* Reservado para consentimento/legal por design (spec §7 Don't) — não usar em CTAs de produto. */
+.btn-consent {
+  background: var(--color-signal-orange);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-consent);
+  padding: 4px 28px;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.13px;
+}
+
+/* Toggle de tema — pequeno círculo no nav pill (spec §4 Icon-Only Circle Button) */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.pill { border-radius: var(--radius-pill); }
+.card-lg { border-radius: var(--radius-lg); }
+
+.surface-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+}
+
+.surface-lifted {
+  background: var(--surface-lifted);
+}
