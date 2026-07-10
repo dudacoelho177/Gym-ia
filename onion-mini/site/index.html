@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<!-- Onion Mini · vitrine pública (M2 do ADR mini-distillation) · design system herdado do site onionevolve.com -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onion Mini — a versão mini e portátil do Sistema Onion</title>
+<meta name="description" content="A metodologia Spec-as-Code do Sistema Onion destilada para caber em qualquer IA — web chats gratuitos ou IDEs agênticas. O começo ideal para quem está iniciando no desenvolvimento com IA.">
+  <style>
+    @font-face { font-family:'Fraunces'; src:url('fonts/fraunces-var.woff2') format('woff2'); font-weight:300 900; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Fraunces'; src:url('fonts/fraunces-italic-var.woff2') format('woff2'); font-weight:300 900; font-style:italic; font-display:swap; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:            #FAF7F2;
+      --bg-card:       #FFFFFF;
+      --bg-glass:      rgba(28,22,18,0.024);
+      --orange:        #C2410C;
+      --orange-light:  #EA580C;
+      --orange-dim:    rgba(194,65,12,0.09);
+      --orange-glow:   rgba(194,65,12,0.20);
+      --purple:        #7C3AED;
+      --purple-light:  #8B5CF6;
+      --purple-dim:    rgba(124,58,237,0.08);
+      --purple-glow:   rgba(124,58,237,0.24);
+      --text:          #1C1612;
+      --text-body:     #3D3530;
+      --text-muted:    #7A726A;
+      --text-dim:      #C4BDB6;
+      --border:        rgba(28,22,18,0.09);
+      --border-warm:   rgba(194,65,12,0.18);
+      --radius:        8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .sans { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .mono { font-family: 'SFMono-Regular', 'Fira Code', 'Courier New', monospace; }
+
+    h1, h2, h3, h4 {
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+
+    .container      { max-width: 860px;  margin: 0 auto; padding: 0 2rem; }
+    .container-wide { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+
+    section { padding: 130px 0; }
+    .bg-alt { background: #F2EDE6; }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 1.1rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(250,247,242,0.94);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: -apple-system, sans-serif;
+      font-weight: 800; font-size: 0.9rem;
+      letter-spacing: 0.09em; color: var(--text);
+    }
+    .nav-logo span { color: var(--orange); }
+    .nav-byline {
+      display: block;
+      font-size: 0.58rem; font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0.06em; text-transform: none;
+      margin-top: -2px;
+    }
+    .nav-cta {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.82rem; font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      background: var(--orange); color: #fff;
+      border-radius: 6px; text-decoration: none;
+      box-shadow: 0 0 18px var(--orange-glow);
+      transition: background 0.18s, box-shadow 0.18s;
+    }
+    .nav-cta:hover { background: #A53409; box-shadow: 0 0 28px rgba(194,65,12,0.4); }
+    .nav-cta:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      padding: 110px 2rem 90px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Ambient shifts per message */
+    .hero-ambient { position: absolute; inset: 0; pointer-events: none; }
+    .ha1, .ha2, .ha3 { position: absolute; inset: 0; opacity: 0; }
+
+    .ha1 {
+      background: radial-gradient(ellipse 70% 35% at 30% 92%, rgba(124,58,237,0.07) 0%, transparent 65%);
+      animation: ha1 12s ease-in-out infinite;
+    }
+    .ha2 {
+      background: radial-gradient(ellipse 70% 35% at 70% 88%, rgba(194,65,12,0.05) 0%, transparent 65%);
+      animation: ha2 12s ease-in-out infinite;
+    }
+    .ha3 {
+      background: radial-gradient(ellipse 90% 45% at 50% 100%, rgba(28,22,18,0.03) 0%, transparent 65%);
+      animation: ha3 12s ease-in-out infinite;
+    }
+
+    @keyframes ha1 {
+      0%, 5%    { opacity: 1; }
+      30%, 100% { opacity: 0; }
+    }
+    @keyframes ha2 {
+      0%, 33%   { opacity: 0; }
+      38%, 62%  { opacity: 1; }
+      67%, 100% { opacity: 0; }
+    }
+    @keyframes ha3 {
+      0%, 66%   { opacity: 0; }
+      71%, 96%  { opacity: 1; }
+      100%      { opacity: 0; }
+    }
+
+    /* Badge */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.38rem 1rem;
+      background: var(--orange-dim);
+      border: 1px solid var(--border-warm);
+      border-radius: 100px;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem; color: var(--orange-light);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 2.75rem; position: relative;
+    }
+    .hero-badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--orange-light);
+      animation: blink 2.4s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.3; transform: scale(0.65); }
+    }
+
+    /* Rotating messages */
+    /* ─── Hero slides — dois tons, serif ─── */
+    .sf-wrap {
+      width: 100%; max-width: 860px;
+      margin-bottom: 1.75rem;
+      position: relative; z-index: 1;
+    }
+    .sf {
+      width: 100%;
+      min-height: clamp(8rem, 20vw, 13rem);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem 2rem;
+    }
+    .sf-text {
+      margin: 0; width: 100%;
+      text-align: center;
+      font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+    .sf-text.out { opacity: 0; }
+
+    /* linha introdutória — charcoal quente, contraste alto no marfim */
+    .sf-text .intro {
+      display: block;
+      font-size: clamp(0.95rem, 2vw, 1.5rem);
+      font-weight: 600;
+      color: #3D3530;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.3em;
+    }
+    /* frase-destaque — laranja terracota, alinhado com a paleta */
+    .sf-text .accent {
+      display: block;
+      font-size: clamp(2rem, 5.2vw, 4.2rem);
+      font-weight: 900;
+      font-style: italic;
+      color: var(--orange);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 24px rgba(194,65,12,0.15);
+    }
+
+    /* ─── Segmentos de progresso ─── */
+    .m-segs {
+      display: flex; gap: 6px;
+      width: 100%; max-width: 860px;
+      margin: 0 auto 2.5rem;
+    }
+    .m-seg {
+      --p: 0%;
+      flex: 1; height: 2px; border-radius: 2px;
+      border: none; padding: 0; cursor: pointer;
+      background: linear-gradient(
+        to right, var(--orange) var(--p), rgba(28,22,18,0.12) var(--p)
+      );
+      position: relative; transition: opacity 0.3s;
+    }
+    .m-seg::before { content: ''; position: absolute; inset: -12px 0; }
+
+    .hero-sub {
+      font-family: -apple-system, sans-serif;
+      font-size: clamp(0.95rem, 2vw, 1.13rem);
+      color: var(--text-muted);
+      max-width: 510px; margin-bottom: 3rem;
+      line-height: 1.72; position: relative;
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+      margin-bottom: 5.5rem; position: relative;
+    }
+
+    .btn-primary {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      padding: 0.88rem 2.1rem;
+      background: var(--orange); color: #fff;
+      border-radius: 7px; text-decoration: none;
+      box-shadow: 0 0 28px var(--orange-glow);
+      transition: all 0.18s;
+    }
+    .btn-primary:hover {
+      background: #A53409;
+      box-shadow: 0 0 44px rgba(194,65,12,0.4);
+      transform: translateY(-2px);
+    }
+    .btn-primary:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+    .btn-secondary {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      padding: 0.88rem 2.1rem;
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 7px; text-decoration: none;
+      transition: all 0.18s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--orange-light);
+      color: var(--orange-light);
+    }
+    .btn-secondary:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+    .hero-stats {
+      display: flex; gap: 3.5rem;
+      justify-content: center; flex-wrap: wrap;
+      position: relative;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: -apple-system, sans-serif;
+      font-size: 2.8rem; font-weight: 800; line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-number em { color: var(--orange); font-style: normal; }
+    .stat-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.11em; color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ─── Chapter label ─── */
+    .chapter-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--orange-light);
+      margin-bottom: 1.1rem; opacity: 0.85;
+    }
+
+    /* ─── Section heading ─── */
+    .section-heading {
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      margin-bottom: 1.75rem;
+    }
+
+    /* ─── Pullquote ─── */
+    .pullquote {
+      border-left: 2px solid var(--purple);
+      padding: 1.5rem 2rem;
+      background: var(--purple-dim);
+      border-radius: 0 8px 8px 0;
+      margin: 3rem 0;
+      font-size: 1.18rem;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.65;
+    }
+    .pullquote cite {
+      display: block;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.74rem; font-style: normal;
+      color: var(--text-muted); margin-top: 1rem;
+    }
+
+    /* ─── Prose ─── */
+    .prose p {
+      font-size: 1.08rem; color: var(--text-body);
+      margin-bottom: 1.5rem; max-width: 700px;
+    }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* ─── Ornament ─── */
+    .ornament {
+      text-align: center; color: var(--text-dim);
+      font-size: 1rem; letter-spacing: 0.65em;
+      margin: 2.5rem 0;
+    }
+
+    /* ─── Feature cards ─── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem; margin: 3rem 0;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--orange-dim);
+      border-radius: 14px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(28,22,18,0.06);
+      transition: border-top-color 0.22s, transform 0.22s, box-shadow 0.22s;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .feature-card:hover {
+      border-top-color: var(--orange);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(28,22,18,0.1);
+    }
+    .feature-card--standard {
+      border-top-color: var(--orange);
+      background: #FDFAF7;
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: var(--orange-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 1.3rem; flex-shrink: 0;
+    }
+    .feature-icon--standard {
+      background: #1C0800;
+    }
+    .feature-stat {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.76rem; font-weight: 700;
+      color: var(--orange); letter-spacing: 0.03em;
+      background: var(--orange-dim);
+      border: 1px solid var(--border-warm);
+      border-radius: 100px;
+      padding: 0.22rem 0.7rem;
+      display: inline-block; margin-bottom: 0.8rem;
+    }
+    .feature-title {
+      font-family: -apple-system, sans-serif;
+      font-size: 1.02rem; font-weight: 700;
+      margin-bottom: 0.55rem; color: var(--text);
+      line-height: 1.3;
+    }
+    .feature-desc {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.85rem; color: var(--text-muted);
+      line-height: 1.72; margin-top: auto;
+    }
+
+    /* ─── Timeline ─── */
+    .timeline {
+      position: relative;
+      padding-left: 2.2rem; margin: 3.2rem 0;
+    }
+    .timeline::before {
+      content: ''; position: absolute;
+      left: 0; top: 0.5rem; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, var(--orange) 0%, transparent 100%);
+    }
+    .timeline-item { position: relative; margin-bottom: 3rem; }
+    .timeline-item::before {
+      content: ''; position: absolute;
+      left: -2.55rem; top: 0.38rem;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 10px var(--orange-glow);
+    }
+    .timeline-date {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.69rem; color: var(--orange-light);
+      text-transform: uppercase; letter-spacing: 0.13em;
+      margin-bottom: 0.35rem;
+    }
+    .timeline-title { font-size: 1.08rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .timeline-desc {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.87rem; color: var(--text-muted);
+      line-height: 1.67; max-width: 600px;
+    }
+
+    /* ─── Metrics — unified grid ─── */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 3rem 0;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .metric-card:hover { background: rgba(194,65,12,0.03); }
+    .metric-number {
+      font-family: -apple-system, sans-serif;
+      font-size: 2.5rem; font-weight: 800;
+      color: var(--orange); line-height: 1;
+      margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.79rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.35rem;
+    }
+    .metric-desc {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.71rem; color: var(--text-muted);
+      line-height: 1.52;
+    }
+
+    /* ─── Mentor section ─── */
+    .mentor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start;
+    }
+    @media(max-width:700px){
+      .mentor-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+    .mentor-avatar {
+      width: 120px; height: 120px; border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(28,22,18,0.14);
+      flex-shrink: 0;
+    }
+    .mentor-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+    }
+    .mentor-avatar.onion-avatar {
+      background: linear-gradient(145deg, #1A0700 0%, #3B1500 55%, #5C2500 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.4rem; overflow: visible;
+      box-shadow:
+        0 0 0 2px #D97706,
+        0 0 0 5px rgba(217,119,6,0.15),
+        0 6px 28px rgba(180,83,9,0.38);
+    }
+    .mentor-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .mentor-role {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.83rem; color: var(--orange-light);
+      margin-bottom: 1.1rem;
+    }
+    .mentor-bio {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.88rem; color: var(--text-muted);
+      line-height: 1.77; margin-bottom: 1rem;
+    }
+    .framework-voice {
+      background: linear-gradient(140deg,
+        rgba(124,58,237,0.07) 0%, rgba(250,247,242,0.95) 100%);
+      border: 1px solid rgba(124,58,237,0.18);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .framework-voice-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.66rem; letter-spacing: 0.19em;
+      text-transform: uppercase; color: var(--purple-light);
+      display: flex; align-items: center; gap: 0.45rem;
+      margin-bottom: 1.2rem;
+    }
+    .framework-voice-label::before {
+      content: ''; display: inline-block;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--purple-light);
+      animation: blink 2.4s infinite;
+    }
+    .framework-voice p {
+      font-size: 0.95rem; font-style: italic;
+      color: var(--text-body); line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+    .framework-voice p:last-child { margin-bottom: 0; }
+
+    /* ─── Code block ─── */
+    .code-block {
+      background: #F0EBE4;
+      border: 1px solid rgba(28,22,18,0.12);
+      border-left: 3px solid var(--orange);
+      border-radius: 8px;
+      padding: 1.75rem;
+      font-family: 'SFMono-Regular', 'Fira Code', monospace;
+      font-size: 0.85rem; line-height: 2;
+      overflow-x: auto; margin: 2.5rem 0;
+    }
+    .code-block .comment { color: #A89F98; }
+    .code-block .cmd     { color: var(--orange); }
+    .code-block .desc    { color: var(--text-muted); }
+
+    /* ─── Quotes grid ─── */
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+      gap: 1.2rem; margin: 3rem 0;
+    }
+    .quote-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: 0 1px 4px rgba(28,22,18,0.05);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .quote-card:hover { border-color: rgba(124,58,237,0.28); box-shadow: 0 4px 16px rgba(28,22,18,0.09); }
+    .quote-text {
+      font-size: 0.95rem; font-style: italic;
+      color: var(--text-body); line-height: 1.8;
+      margin-bottom: 1.3rem;
+    }
+    .quote-source {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem; color: var(--purple-light);
+    }
+
+    /* ─── Standards label + badge ─── */
+    .standards-label {
+      font-size: 0.68rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--orange);
+      margin: 3rem 0 1.4rem; opacity: 0.9;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .standards-label::before, .standards-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: var(--border-warm);
+    }
+    .feature-card--standard {
+      border-top-color: var(--orange) !important;
+    }
+
+    /* ─── Standards grid — 3 col ─── */
+    .feature-grid--standards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* ─── Dogfood mega-card ─── */
+    .dogfood-card {
+      margin-top: 1.5rem;
+      background: #FFF5EC;
+      border: 2px solid var(--orange);
+      border-top: 4px solid var(--orange);
+      border-radius: 14px;
+      padding: 2.5rem 2.75rem;
+      box-shadow: 0 8px 40px rgba(194,65,12,0.14), 0 2px 8px rgba(194,65,12,0.08);
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 3rem;
+      align-items: start;
+    }
+    .dogfood-header { display: flex; align-items: flex-start; gap: 1.2rem; margin-bottom: 1rem; }
+    .dogfood-icon-wrap {
+      width: 52px; height: 52px; flex-shrink: 0;
+      border-radius: 12px;
+      background: #1C0800;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .dogfood-title {
+      font-family: -apple-system, sans-serif;
+      font-size: 1.25rem; font-weight: 800;
+      color: var(--text); margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .dogfood-badge {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--orange); letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: var(--orange-dim);
+      border: 1px solid var(--border-warm);
+      border-radius: 4px; padding: 0.18rem 0.55rem;
+      display: inline-block;
+    }
+    .dogfood-desc {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.87rem; color: var(--text-body);
+      line-height: 1.76; margin-top: 1.1rem;
+    }
+    .dogfood-desc strong { color: var(--text); font-weight: 700; }
+    .dogfood-desc code {
+      background: var(--orange-dim); border-radius: 3px;
+      padding: 0.1em 0.35em; font-size: 0.82em;
+      color: var(--orange); font-family: 'SFMono-Regular', monospace;
+    }
+    .dogfood-proof {
+      background: #1C0800;
+      border: 1px solid rgba(217,119,6,0.3);
+      border-radius: 10px;
+      padding: 1.6rem 1.4rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .proof-label {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.6rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #D97706;
+      margin-bottom: 0.15rem;
+    }
+    .proof-item {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 1rem;
+    }
+    .proof-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .proof-value {
+      font-family: -apple-system, sans-serif;
+      font-size: 1.35rem; font-weight: 800;
+      color: #FAF7F2; letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .proof-sub {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.72rem; color: #C4A882;
+      margin-top: 0.2rem;
+    }
+
+    .feature-badge {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--orange); letter-spacing: 0.04em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      background: var(--orange-dim);
+      border: 1px solid var(--border-warm);
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* ─── Tags ─── */
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: var(--orange-dim);
+      border: 1px solid var(--border-warm);
+      border-radius: 4px;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.72rem; color: var(--orange-light);
+      margin: 0.25rem 0.2rem;
+    }
+
+    /* ─── CTA ─── */
+    .cta-card {
+      background: linear-gradient(145deg,
+        rgba(194,65,12,0.06) 0%,
+        rgba(250,247,242,0.98) 50%,
+        rgba(124,58,237,0.05) 100%);
+      border: 1px solid var(--border-warm);
+      border-radius: 18px;
+      padding: 6rem 2rem;
+      text-align: center;
+      box-shadow: 0 2px 16px rgba(28,22,18,0.07);
+      position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: ''; position: absolute;
+      top: -40%; left: 50%; transform: translateX(-50%);
+      width: 580px; height: 300px;
+      background: radial-gradient(ellipse, rgba(194,65,12,0.07), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      margin-bottom: 1.4rem; position: relative;
+    }
+    .cta-title em { font-style: italic; color: var(--orange); }
+    .cta-sub {
+      font-family: -apple-system, sans-serif;
+      font-size: 1rem; color: var(--text-muted);
+      max-width: 460px; margin: 0 auto 2.8rem;
+      line-height: 1.68; position: relative;
+    }
+    .cta-actions {
+      display: flex; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+      position: relative; margin-bottom: 2.5rem;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3.5rem 0;
+      text-align: center;
+    }
+    footer p {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.85rem; color: var(--text-muted);
+      line-height: 1.6; margin: 0.4rem 0;
+    }
+    footer a { color: var(--orange-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-logo { font-size: 2rem; margin-bottom: 1rem; }
+
+    /* ─── Helpers ─── */
+    code {
+      font-family: 'SFMono-Regular', 'Fira Code', monospace;
+      font-size: 0.88em;
+      color: var(--orange);
+      background: var(--orange-dim);
+      padding: 0.1em 0.4em;
+      border-radius: 3px;
+    }
+    .hl  { color: var(--orange-light); }
+    .hlp { color: var(--purple-light); }
+
+    /* ─── Responsive ─── */
+    @media(max-width:900px){
+      .feature-grid--standards { grid-template-columns: repeat(2, 1fr); }
+      .dogfood-card { grid-template-columns: 1fr; gap: 1.75rem; }
+    }
+    @media(max-width:640px){
+      section { padding: 90px 0; }
+      .hero-stats { gap: 2rem; }
+      .stat-number { font-size: 2.2rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature-grid--standards { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .dogfood-card { padding: 1.75rem 1.5rem; }
+    }
+
+    @media(prefers-reduced-motion: reduce){
+      .sf-text { transition: none; }
+      .ha1, .ha2, .ha3 { animation: none; opacity: 0; }
+      .ha2 { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo sans">🧅 <span>ONION MINI</span><small class="nav-byline">a versão mini e portátil</small></div>
+    <a href="https://onionevolve.com/historia/" class="nav-cta sans" style="margin-right:8px">Capítulo Novo</a>
+    <a href="https://onionevolve.com" class="nav-cta sans">← Onion Evolve</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-ambient" aria-hidden="true">
+      <div class="ha1"></div>
+      <div class="ha2"></div>
+      <div class="ha3"></div>
+    </div>
+    <div class="hero-badge sans">
+      <span class="hero-badge-dot" aria-hidden="true"></span>
+      Multi-plataforma · Web Chats & IDEs Agênticas · 2026
+    </div>
+    <h1>A mesma metodologia.<br><em>Destilada para caber em qualquer IA.</em></h1>
+    <p class="hero-sub sans">O <strong>Onion Mini</strong> é a versão mini e portátil do Sistema Onion:
+    desenvolvimento <strong>Spec-as-Code</strong> — especificação antes do código — em um master-prompt
+    que roda em web chats gratuitos (Claude.ai, ChatGPT, Gemini) e nativamente em IDEs agênticas
+    (Claude Code, Cursor, Codex, Copilot, Zed...). O começo ideal para quem está iniciando no
+    desenvolvimento com IA.</p>
+    <div class="hero-actions sans">
+      <a href="https://github.com/marciocar/onion-mini" class="btn-primary" target="_blank" rel="noopener">Ver no GitHub →</a>
+      <a href="#instalar" class="btn-secondary">Como instalar</a>
+    </div>
+  </section>
+
+  <section class="bg-alt">
+    <div class="container">
+      <div class="chapter-label sans">O que vem dentro</div>
+      <h2>Pequeno no tamanho.<br>Inteiro na disciplina.</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🥇</div>
+          <div class="feature-title sans">Regra de Ouro</div>
+          <div class="feature-desc sans">Nunca gerar código antes da especificação: <code>@product</code> especifica o negócio, <code>@engineer</code> planeja a técnica — só então codificar. Com guardião anti-bypass embutido.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <div class="feature-title sans">Planejar → Executar → Avaliar</div>
+          <div class="feature-desc sans">Todo trabalho roda esse ciclo — e a avaliação fecha sempre com <strong>redesenho</strong>: "o que faremos diferente no próximo?". Disciplina de autorregulação embutida no fluxo, sem cerimônia.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title sans">Task Manager Lite</div>
+          <div class="feature-desc sans">Gestão de tasks agnóstica de ferramenta: o backlog do contexto É o quadro (<code>A Fazer → Em Dev → Feito</code>). Quer Jira, ClickUp ou Trello? Troca só o adapter de prompts.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <div class="feature-title sans">2 Contextos SSOT</div>
+          <div class="feature-desc sans">Negócio e Técnica em arquivos únicos e estruturados — visão, personas, dores, métricas, backlog, ADR-lite, débitos. Cada seção mapeia uma camada do Onion completo: graduar é expandir, sem retrabalho.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title sans">AGENTS.md universal</div>
+          <div class="feature-desc sans">Config no padrão universal lido nativamente por Codex, Cursor, Copilot, Zed e Aider — copiou para a raiz, o agente se auto-configura. Claude Code entra pelo <code>CLAUDE.md</code> incluso.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🥣</div>
+          <div class="feature-title sans">Dogfood Mini</div>
+          <div class="feature-desc sans">Nada está "pronto" sem rodar ou verificar de verdade — conclusão sem evidência é hipótese, e é declarada como tal. A honestidade epistêmica do Onion, de bolso.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="chapter-label sans">Os 5 ciclos</div>
+      <h2>Da ideia ao registro,<br>sempre pelo mesmo caminho.</h2>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-number">1</div><div class="metric-label sans">Produto</div><div class="metric-desc sans">Ideia → spec com critérios de aceite testáveis</div></div>
+        <div class="metric-card"><div class="metric-number">2</div><div class="metric-label sans">Engenharia</div><div class="metric-desc sans">Spec → plano com quadro de tasks → código verificado</div></div>
+        <div class="metric-card"><div class="metric-number">3</div><div class="metric-label sans">Knowledge Base</div><div class="metric-desc sans">Pesquisa → KB estruturada (visão, conceitos, gotchas)</div></div>
+        <div class="metric-card"><div class="metric-number">4</div><div class="metric-label sans">Sync</div><div class="metric-desc sans">Engenharia reversa: o código atualiza os contextos</div></div>
+        <div class="metric-card"><div class="metric-number">5</div><div class="metric-label sans">Sessões</div><div class="metric-desc sans">Cada sessão registrada — retome amanhã do zero</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar" class="bg-alt">
+    <div class="container">
+      <div class="chapter-label sans">Como instalar</div>
+      <h2>Dois cenários. Zero fricção.</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <div class="feature-title sans">Cenário A — Web Chats (grátis)</div>
+          <div class="feature-desc sans">Claude.ai, ChatGPT ou Gemini: cole o <strong>ONION-MASTER-PROMPT.md</strong> nas instruções do seu Project/GPT/Gem e anexe os 3 arquivos de <code>docs/</code>. A IA vira o motor lógico; você salva os arquivos.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <div class="feature-title sans">Cenário B — IDEs Agênticas</div>
+          <div class="feature-desc sans">Copie <strong>AGENTS.md</strong> + <strong>CLAUDE.md</strong> + <strong>ONION-MASTER-PROMPT.md</strong> + <code>docs/</code> para a raiz do projeto. Pronto: Codex, Cursor, Copilot, Zed e Claude Code auto-descobrem e passam a editar seus arquivos direto.</div>
+        </div>
+      </div>
+      <div class="hero-actions sans" style="justify-content:center; margin-top:2rem;">
+        <a href="https://github.com/marciocar/onion-mini" class="btn-primary" target="_blank" rel="noopener">Baixar do GitHub →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="graduacao">
+    <div class="container">
+      <div class="chapter-label sans">Quando o projeto crescer</div>
+      <h2>O Mini é a porta.<br>O Onion é a casa.</h2>
+      <p class="hero-sub sans" style="margin: 1rem 0 1.5rem;">Precisou de mais — 95+ comandos, 51 agentes
+      especialistas, compliance ISO/SOC2, task managers plugados de verdade, knowledge graphs, federação
+      multi-repo? O caminho natural é a adoção do <a href="https://onionevolve.com">Sistema Onion completo</a>
+      (plataforma: Claude Code). Tudo que você construiu no Mini migra sem retrabalho: cada seção dos seus
+      contextos expande para a camada correspondente do framework — é a mesma metodologia, só que destilada.</p>
+      <div class="sans" style="display:flex; gap:.5rem; flex-wrap:wrap;">
+        <span class="tag sans">Spec-as-Code</span>
+        <span class="tag sans">Avaliar & Redesenhar</span>
+        <span class="tag sans">SDAAL destilado</span>
+        <span class="tag sans">Multi-plataforma</span>
+        <span class="tag sans">Graduação sem retrabalho</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo" aria-hidden="true">🧅</div>
+    <p class="sans">Onion Mini — destilação curada do <a href="https://onionevolve.com">Sistema Onion</a>.
+    O ciclo Planejar→Executar→Avaliar é baseado no modelo PLEA de Pedro Rosário (Autorregulação da
+    Aprendizagem, Universidade do Minho); a adaptação aos ciclos é do Onion. Código aberto em <a href="https://github.com/marciocar/onion-mini">github.com/marciocar/onion-mini</a>.</p>
+  </footer>
+
+</body>
+</html>

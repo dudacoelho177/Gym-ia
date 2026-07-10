@@ -1,0 +1,8 @@
+{
+  "description": "Cliente busca monitoramento de seguranca para eventos, incidentes e resposta inicial.",
+  "solution_type": "SOC",
+  "customer_segment": "industria",
+  "objective": "aumentar capacidade de deteccao e resposta",
+  "initial_scope": "fontes de log de firewall, endpoints e servidores criticos",
+  "target_audience": "pre-vendas"
+}

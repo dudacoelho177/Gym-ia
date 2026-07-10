@@ -1,0 +1,44 @@
+{
+  "offers": [
+    {
+      "name": "Sustentacao de Infraestrutura",
+      "category": "infraestrutura",
+      "capabilities": ["servidores", "storage", "virtualizacao", "datacenter"]
+    },
+    {
+      "name": "Cloud Operations",
+      "category": "cops",
+      "capabilities": ["operacao cloud", "governanca", "custos", "sustentacao"]
+    },
+    {
+      "name": "Security Operations Center",
+      "category": "soc",
+      "capabilities": ["monitoramento de seguranca", "siem", "incidentes", "playbooks"]
+    },
+    {
+      "name": "Servicos de Cyberseguranca",
+      "category": "cyberseguranca",
+      "capabilities": ["firewall", "edr", "vulnerabilidades", "controles"]
+    },
+    {
+      "name": "Backup e Recuperacao",
+      "category": "backup",
+      "capabilities": ["backup", "restore", "rpo", "rto", "retencao"]
+    },
+    {
+      "name": "Observabilidade",
+      "category": "observabilidade",
+      "capabilities": ["metricas", "logs", "apm", "dashboards"]
+    },
+    {
+      "name": "Redes Corporativas",
+      "category": "redes",
+      "capabilities": ["lan", "wan", "sd-wan", "switches", "roteadores"]
+    },
+    {
+      "name": "Cloud e Migracao",
+      "category": "cloud",
+      "capabilities": ["migracao", "landing zone", "arquitetura cloud", "modernizacao"]
+    }
+  ]
+}

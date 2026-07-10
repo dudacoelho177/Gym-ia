@@ -1,0 +1,8 @@
+{
+  "description": "Cliente precisa revisar a estrategia de backup e recuperacao para sistemas criticos.",
+  "solution_type": "backup",
+  "customer_segment": "servicos financeiros",
+  "objective": "reduzir risco de perda de dados e validar RPO/RTO",
+  "initial_scope": "ambiente virtualizado com bancos de dados e arquivos corporativos",
+  "target_audience": "pre-vendas"
+}
