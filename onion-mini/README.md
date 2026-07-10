@@ -94,6 +94,57 @@ O Onion Mini não é um gerador de código descontrolado. Ele segue regras estri
   - No **Cenário B**, a IA cria/edita os arquivos de código diretamente no projeto.
   - No **Cenário A**, a IA gera blocos de código para você colar.
 
+### Autenticação & Segurança (Issue #2)
+
+O MVP local inclui autenticação de usuários seguindo Onion Architecture:
+
+- Domínio com `@dataclass` em `src/domain/auth.py`.
+- Portas em `src/domain/ports/`.
+- Casos de uso em `src/services/auth_service.py`.
+- Adapters locais em `src/adapters/` para JSON, PBKDF2, sessão assinada e OAuth/OIDC.
+- Integração HTTP em `app/web.py` com `/login`, `/register`, `/logout`, `/auth/google/start` e `/auth/google/callback`.
+
+Configuração local:
+
+1. Use `.env.example` como referência.
+2. O arquivo `.env` local já vem com valores fictícios para desenvolvimento.
+3. Para produção, troque `SECRET_KEY`/`AUTH_SECRET_KEY` por um valor longo e aleatório.
+4. Configure o OAuth no Google Cloud Console e preencha:
+
+```bash
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_REDIRECT_URI=https://seu-dominio/auth/google/callback
+```
+
+Variáveis principais:
+
+```bash
+SECRET_KEY=valor-longo-aleatorio
+USER_STORE_PATH=data/auth/users.json
+AUTH_SESSION_TTL_SECONDS=604800
+AUTH_PBKDF2_ITERATIONS=600000
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_REDIRECT_URI=http://127.0.0.1:8501/auth/google/callback
+```
+
+Rodar os testes unitários:
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+A suíte cobre os fluxos de domínio, services e adapters de autenticação. Neste estado do projeto, ela roda 36 testes unitários.
+
+Rodar a UI local:
+
+```bash
+python3 -m app.web
+```
+
+Depois acesse `http://127.0.0.1:8501`. Sem sessão, a aplicação redireciona automaticamente para `/login`.
+
 
 ### 📚 Estudando algo novo (O Ciclo de Knowledge Base)
 - **O que você diz:** *"Atue como @meta e faça uma pesquisa sobre o framework Tailwind. Crie uma KB para nós."*

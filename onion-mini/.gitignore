@@ -25,3 +25,7 @@ __pycache__/
 *$py.class
 .venv/
 env/
+
+# Local environment and runtime data
+.env
+data/auth/
