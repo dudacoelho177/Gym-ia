@@ -94,29 +94,6 @@ O Onion Mini não é um gerador de código descontrolado. Ele segue regras estri
   - No **Cenário B**, a IA cria/edita os arquivos de código diretamente no projeto.
   - No **Cenário A**, a IA gera blocos de código para você colar.
 
-### MVP local deste desafio
-
-Este fork tambem contem um MVP da feature `F-01 — Gerador de Roteiro de Levantamento por Oportunidade`.
-
-Rodar os testes:
-
-```bash
-python3 -m unittest discover -s tests
-```
-
-Gerar um roteiro via CLI:
-
-```bash
-python3 -m app.cli --opportunity-file data/examples/backup_opportunity.json --format markdown
-```
-
-Abrir a UI local:
-
-```bash
-python3 -m app.web
-```
-
-Depois acesse `http://127.0.0.1:8501`.
 
 ### 📚 Estudando algo novo (O Ciclo de Knowledge Base)
 - **O que você diz:** *"Atue como @meta e faça uma pesquisa sobre o framework Tailwind. Crie uma KB para nós."*

@@ -25,7 +25,3 @@ __pycache__/
 *$py.class
 .venv/
 env/
-
-# Segurança / Variáveis de Ambiente
-.env
-.env.local
